@@ -31,7 +31,7 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
-create_bot.py
+Telegram_bot_Pizza_shop/create_bot.py
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

@@ -1,5 +1,7 @@
 from aiogram import types, Dispatcher
-from create_bot import dp, bot
+
+from create_bot import bot
+from data_base.sqlite_db import sql_read
 from keyboards import kb_client
 
 
@@ -28,7 +30,13 @@ async def pizza_place_command(message: types.Message):
         await message.reply('Ул. Низами 19\nЧтобы общаться с ботом напишите ему!\nhttps://t.me/Baku_pizza_bot')
 
 
+# @dp.message_handler(commands=['Меню'])
+async def pizza_menu(message: types.Message):
+    await sql_read(message)
+
+
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(commands_start, commands=['start', 'help'])
     dp.register_message_handler(pizza_open_command, commands=['Режим_работы'])
     dp.register_message_handler(pizza_place_command, commands=['Расположение'])
+    dp.register_message_handler(pizza_menu, commands=['Меню'])
