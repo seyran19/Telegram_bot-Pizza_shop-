@@ -7,6 +7,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from create_bot import bot
 from data_base.sqlite_db import sql_add_command, sql_read2, sql_delete_command
 from keyboards.admin_kb import button_case_admin
+from Logger import my_log
 
 ID = None
 
@@ -32,6 +33,7 @@ async def make_changes(message: types.Message):
 async def cm_start(message: types.Message):
     if message.from_user.id == ID:
         await FSMAdmin.photo.set()
+        my_log.info('Бот в режиме машины состояний!')
         await message.reply('Загрузите фото')
 
 
@@ -44,6 +46,7 @@ async def cancel_handler(message: types.Message, state: FSMContext):
         if current_state is None:
             return
         await state.finish()
+        my_log.info('Бот вышел из машины состояний!')
         await message.reply('Ок')
 
 
@@ -54,6 +57,7 @@ async def load_photo(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             data['photo'] = message.photo[0].file_id
         await FSMAdmin.next()
+        my_log.info('Первое состояние завершено успешно, переходим к след.')
         await message.reply('Теперь введите название')
 
 
@@ -64,6 +68,7 @@ async def load_name(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             data['name'] = message.text
         await FSMAdmin.next()
+        my_log.info('Второе состояние завершено успешно, переходим к след.')
         await message.reply('Теперь введите описание')
 
 
@@ -74,6 +79,7 @@ async def load_description(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             data['description'] = message.text
         await FSMAdmin.next()
+        my_log.info('Третье состояние завершено успешно, переходим к след.')
         await message.reply('Теперь укажите цену')
 
 
@@ -85,12 +91,14 @@ async def load_price(message: types.Message, state: FSMContext):
             data['price'] = float(message.text)
         await sql_add_command(state)
         await state.finish()
+        my_log.info('Бот вышел из машины состояний')
 
 
 # @dp.callback_query_handler(lambda x: x.data and x.data.start_with('del'))
 async def del_callback_run(callback: types.CallbackQuery):
     await sql_delete_command(callback.data.replace('del ', ''))
     await callback.answer(text=f'{callback.data.replace("del ", "")} удалена!', show_alert=True)
+    my_log.info(f'{callback.data.replace("del ", "")} удалена!')
 
 
 # @dp.message_handler(commands='Удалить')

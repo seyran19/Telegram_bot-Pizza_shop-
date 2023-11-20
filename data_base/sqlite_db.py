@@ -1,5 +1,6 @@
 import sqlite3 as sq
 
+from Logger import my_log
 from create_bot import bot
 
 
@@ -14,12 +15,14 @@ def sql_start():
                  'description TEXT,'
                  'price TEXT)')
     base.commit()
+    my_log.info('Произведено успешное подключение к базе данных')
 
 
 async def sql_add_command(state):
     async with state.proxy() as data:
         cur.execute('INSERT INTO menu VALUES (?, ?, ?, ?)', tuple(data.values()))
         base.commit()
+        my_log.info('Информация успешно добавлена в базу данных')
 
 
 async def sql_read(message):
@@ -30,6 +33,8 @@ async def sql_read(message):
 async def sql_read2():
     return cur.execute('SELECT * FROM menu').fetchall()
 
+
 async def sql_delete_command(data):
     cur.execute('DELETE FROM menu WHERE name == ?', (data,))
     base.commit()
+

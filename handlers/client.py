@@ -3,7 +3,7 @@ from aiogram import types, Dispatcher
 from create_bot import bot
 from data_base.sqlite_db import sql_read
 from keyboards import kb_client
-
+from Logger import my_log
 
 # @dp.message_handler(commands=['start', 'help'])
 async def commands_start(message: types.Message):
@@ -12,6 +12,8 @@ async def commands_start(message: types.Message):
         await message.delete()
     except Exception:
         await message.reply('Общение с ботом через лс, напишите ему:\nhttps://t.me/Baku_pizza_bot')
+        my_log.error(f'Пользователь еще не общался с ботом\n{type(Exception)}')
+
 
 
 # @dp.message_handler(commands=['Режим_работы'])
@@ -20,6 +22,7 @@ async def pizza_open_command(message: types.Message):
         await bot.send_message(message.from_user.id, 'Пн-Вс с 9:00 до 20:00')
     except Exception:
         await message.reply('Пн-Вс с 9:00 до 20:00\nЧтобы общаться с ботом напишите ему!\nhttps://t.me/Baku_pizza_bot')
+        my_log.error(f'Пользователь еще не общался с ботом\n{type(Exception)}')
 
 
 # @dp.message_handler(commands=['Расположение'])
@@ -28,11 +31,13 @@ async def pizza_place_command(message: types.Message):
         await bot.send_message(message.from_user.id, 'Ул. Низами 19')
     except Exception:
         await message.reply('Ул. Низами 19\nЧтобы общаться с ботом напишите ему!\nhttps://t.me/Baku_pizza_bot')
+        my_log.error(f'Пользователь еще не общался с ботом\n{type(Exception)}')
 
 
 # @dp.message_handler(commands=['Меню'])
 async def pizza_menu(message: types.Message):
     await sql_read(message)
+    my_log.info('Меню успешно предоставлено!')
 
 
 def register_handlers_client(dp: Dispatcher):
